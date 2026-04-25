@@ -1,26 +1,5 @@
-@app.get("/download/platform")
 def download_platform_csv():
-    path = "platform_test_data.csv"
-    if not Path(path).exists():
-        # Generate if missing
-        data = generate_datasets(40)
-        import pandas as pd
-        pd.DataFrame(data["platform"]).to_csv(path, index=False)
-    return FileResponse(path, media_type="text/csv", filename=path)
-
-from __future__ import annotations
-"""FastAPI reconciliation service."""
-
-@app.get("/download/bank")
 def download_bank_csv():
-    path = "bank_test_data.csv"
-    if not Path(path).exists():
-        # Generate if missing
-        data = generate_datasets(40)
-        import pandas as pd
-        pd.DataFrame(data["bank"]).to_csv(path, index=False)
-    return FileResponse(path, media_type="text/csv", filename=path)
-
 from __future__ import annotations
 """FastAPI reconciliation service."""
 from pathlib import Path
