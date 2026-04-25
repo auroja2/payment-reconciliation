@@ -17,8 +17,9 @@ def download_bank_csv():
         import pandas as pd
         pd.DataFrame(data["bank"]).to_csv(path, index=False)
     return FileResponse(path, media_type="text/csv", filename=path)
-"""FastAPI reconciliation service."""
+
 from __future__ import annotations
+"""FastAPI reconciliation service."""
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
