@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Reconciliation Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>💰 Payment Reconciliation</h1>
+            <p class="subtitle">Compare platform transactions with bank records</p>
+        </header>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button id="generateBtn" class="btn btn-primary">
+                <span class="icon">📊</span> Generate Test Data
+            </button>
+            <button id="reconcileBtn" class="btn btn-success">
+                <span class="icon">🔄</span> Run Reconciliation
+            </button>
+            <button id="refreshBtn" class="btn btn-secondary">
+                <span class="icon">🔃</span> Refresh Data
+            </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards" id="summaryCards" style="display: none;">
+            <div class="card card-total">
+                <h3>Total Transactions</h3>
+                <p class="number" id="totalTxns">0</p>
+            </div>
+            <div class="card card-matched">
+                <h3>Matched</h3>
+                <p class="number" id="matchedCount">0</p>
+            </div>
+            <div class="card card-missing">
+                <h3>Missing in Bank</h3>
+                <p class="number" id="missingCount">0</p>
+            </div>
+            <div class="card card-extra">
+                <h3>Extra in Bank</h3>
+                <p class="number" id="extraCount">0</p>
+            </div>
+            <div class="card card-mismatch">
+                <h3>Amount Mismatch</h3>
+                <p class="number" id="mismatchCount">0</p>
+            </div>
+            <div class="card card-currency">
+                <h3>USD → INR</h3>
+                <p class="number" id="currencyCount">0</p>
+            </div>
+            <div class="card card-rate">
+                <h3>Match Rate</h3>
+                <p class="number" id="matchRate">0%</p>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="status-message"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="transactions">Transactions</button>
+            <button class="tab" data-tab="report">Reconciliation Report</button>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactions" class="tab-content active">
+            <div class="tables-container">
+                <!-- Platform Transactions -->
+                <div class="table-section">
+                    <h2>📱 Platform Transactions <span id="platformCount" class="count-badge">0</span></h2>
+                    <div class="table-wrapper">
+                        <table id="platformTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Bank Transactions -->
+                <div class="table-section">
+                    <h2>🏦 Bank Transactions <span id="bankCount" class="count-badge">0</span></h2>
+                    <div class="table-wrapper">
+                        <table id="bankTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Tab -->
+        <div id="report" class="tab-content">
+            <div class="report-sections">
+                <!-- Matched -->
+                <div class="report-section">
+                    <h2 class="section-title matched">✅ Matched Transactions</h2>
+                    <div class="table-wrapper">
+                        <table id="matchedTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Platform Amount</th>
+                                    <th>Bank Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Missing in Bank -->
+                <div class="report-section">
+                    <h2 class="section-title missing">⚠️ Missing in Bank</h2>
+                    <div class="table-wrapper">
+                        <table id="missingTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Extra in Bank -->
+                <div class="report-section">
+                    <h2 class="section-title extra">📥 Extra in Bank</h2>
+                    <div class="table-wrapper">
+                        <table id="extraTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Amount Mismatches -->
+                <div class="report-section">
+                    <h2 class="section-title mismatch">❌ Amount Mismatches</h2>
+                    <div class="table-wrapper">
+                        <table id="mismatchTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Platform Amount</th>
+                                    <th>Bank Amount</th>
+                                    <th>Difference</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Duplicates -->
+                <div class="report-section">
+                    <h2 class="section-title duplicate">🔁 Duplicates in Bank</h2>
+                    <div class="table-wrapper">
+                        <table id="duplicateTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Date</th>
+                                    <th>Occurrences</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Currency Conversions -->
+                <div class="report-section">
+                    <h2 class="section-title currency">💱 Currency Conversions (USD → INR)</h2>
+                    <p class="section-info">Transactions where platform recorded in USD and bank settled in INR (Rate:
+                        $1 = ₹83.50)</p>
+                    <div class="table-wrapper">
+                        <table id="currencyTable">
+                            <thead>
+                                <tr>
+                                    <th>Txn ID</th>
+                                    <th>Platform (USD)</th>
+                                    <th>Platform (INR)</th>
+                                    <th>Bank (INR)</th>
+                                    <th>Difference</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
