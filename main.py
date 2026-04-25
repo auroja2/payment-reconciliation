@@ -1,5 +1,3 @@
-def download_platform_csv():
-def download_bank_csv():
 from __future__ import annotations
 """FastAPI reconciliation service."""
 from pathlib import Path
