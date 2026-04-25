@@ -1,3 +1,22 @@
+@app.get("/download/platform")
+def download_platform_csv():
+    path = "platform_test_data.csv"
+    if not Path(path).exists():
+        # Generate if missing
+        data = generate_datasets(40)
+        import pandas as pd
+        pd.DataFrame(data["platform"]).to_csv(path, index=False)
+    return FileResponse(path, media_type="text/csv", filename=path)
+
+@app.get("/download/bank")
+def download_bank_csv():
+    path = "bank_test_data.csv"
+    if not Path(path).exists():
+        # Generate if missing
+        data = generate_datasets(40)
+        import pandas as pd
+        pd.DataFrame(data["bank"]).to_csv(path, index=False)
+    return FileResponse(path, media_type="text/csv", filename=path)
 """FastAPI reconciliation service."""
 from __future__ import annotations
 from pathlib import Path
@@ -82,6 +101,26 @@ def get_report():
 @app.get("/transactions")
 def get_transactions():
     return {"platform": _store["platform"], "bank": _store["bank"]}
+
+
+# Export generated test data as CSV
+@app.get("/export-test-data")
+def export_test_data():
+    import pandas as pd
+    platform = _store["platform"]
+    bank = _store["bank"]
+    if not platform or not bank:
+        # Generate if not present
+        data = generate_datasets(40)
+        platform = data["platform"]
+        bank = data["bank"]
+    platform_df = pd.DataFrame(platform)
+    bank_df = pd.DataFrame(bank)
+    platform_path = "platform_test_data.csv"
+    bank_path = "bank_test_data.csv"
+    platform_df.to_csv(platform_path, index=False)
+    bank_df.to_csv(bank_path, index=False)
+    return {"platform_csv": platform_path, "bank_csv": bank_path}
 
 
 @app.get("/health")
