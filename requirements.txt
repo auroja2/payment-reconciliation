@@ -1,3 +1,4 @@
+pip>=26.0.1
 fastapi
 uvicorn[standard]
 pandas
